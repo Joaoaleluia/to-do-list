@@ -56,5 +56,23 @@ li{
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    border-radius: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+li.completed{
+    text-decoration: line-through;
+    color: #777;
+}
+
+.remove-btn{
+    background: #d32c2c;
+    border: none;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.remove-btn:hover{
+    background: #c52929;
 }
