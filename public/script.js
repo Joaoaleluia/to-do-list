@@ -1,66 +1,84 @@
-class Task{
-    constructor(description){
+class Task {
+    constructor(description) {
         this.description = description;
         this.completed = false;
     }
 
-    toggleComplete(){
+    toggleComplete() {
         this.completed = !this.completed;
     }
 }
 
-class TaskManager{
+class TaskManager {
     constructor(){
-        this.tasks = [];
+        this.taskList = document.getElementById('task-list');
+        this.loadTasks();
     }
 
-    addTask(description){
-        const task = new Task(description);
-        this.tasks.push(task);
-        this.displayTask();
+    async loadTasks(){
+        const response = await fetch('/tasks');
+        const tasks = await response.json();
+        this.render(tasks);
     }
 
-    removeTask(index){
-        this.tasks.splice(index, 1);
-        this.displayTask();
+    async addTask(description){
+        await fetch('/tasks', {
+            method: 'POST',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify({ description })
+        });
+        this.loadTasks();
     }
 
-    toggleTaskCompletion(index){
-        this.tasks[index].toggleComplete();
-        this.displayTask();
+    async removeTask(id){
+        await fetch(`/tasks/${id}`, { method: 'DELETE'});
+        this.loadTasks();
     }
 
-    displayTask(){
-        const taskList = document.getElementById('task-list');
-        taskList.innerHTML = '';
+    async toggleTask(id){
+        await fetch(`/tasks/${id}/toggle`, { method: 'PATCH'});
+    }
 
-        this.tasks.forEach((task, index) => {
-            const taskItem = document.createElement('li');
-            taskItem.className = task.completed ? 'completed' : '';
-            
-            const taskDescription = document.createElement('span');
-            taskDescription.textContent = taskDescription;
-            taskDescription.addEventListener('click', () => this.toggleTaskCompletion(index));
+    render(tasks){
+        this.taskList.innerHTML = '';
 
-            const removeButton = document.createElement('button');
-            removeButton.className = 'remove-btn';
-            removeButton.textContent = 'Remove';
-            removeButton.addEventListener('click', () => this.removeTask(index));
+        tasks.forEach(task => {
+            const li = document.createElement('li');
+            li.className = task.completed ? 'completed' : '';
 
-            taskItem.appendChilden(taskDescription);
-            taskItem.appendChilden(removeButton);
-            taskItem.appendChilden(taskItem);
-        })
+            const span = document.createElement('button');
+            span.textContent = task.description;
+            span.addEventListener('click', () => this.toggleTask(task.id));
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.textContent = 'Remove';
+            removeBtn.addEventListener('click', () => this.removeTask(task.id));
+
+            li.appendChild(span);
+            li.appendChild(removeBtn);
+            this.taskList.appendChild(li);
+        });
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const TaskManager = new TaskManager();
-    const addTaskBtn = document.getElementById('add-task-btn')
-    const addTaskInput = document.getElementById('add-input')
+    const taskManager = new TaskManager();
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const taskInput = document.getElementById('task-input');
 
     addTaskBtn.addEventListener('click', () => {
-        const taskDescription = addTaskInput.ariaValueMax.trim();
-        
-    })
-})
+        const taskDescription = taskInput.value.trim();
+        if (taskDescription) {
+            taskManager.addTask(taskDescription);
+            taskInput.value = '';
+            taskInput.focus();
+        }
+    });
+
+    taskInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            addTaskBtn.click();
+        }
+    });
+});
