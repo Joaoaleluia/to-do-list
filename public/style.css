@@ -4,16 +4,17 @@ body{
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #004643;
     margin: 0;
 }
 
 .container{
-    background-color: white;
+    background-color: #abd1c6;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 300px;
+    border: 2px solid #e8e4e6;
 }
 
 h1{
@@ -35,20 +36,23 @@ input{
 button{
     padding: 10px;
     border: none;
-    background: #28a745;
-    color: white;
+    background: #f9bc60;
+    color: #001e1d;
     cursor: pointer;
     border-radius: 4px;
     margin-left: 10px;
+    font-weight: bold;
 }
 
 button:hover{
-    background: #1a672b;
+    background: #f89d15;
 }
 
 ul{
     list-style: none;
     padding: 0;
+    color: #004643;
+    font-weight: bold;
 }
 
 li{
