@@ -4,10 +4,12 @@ class Task {
         this.completed = false;
     }
 
+
     toggleComplete() {
         this.completed = !this.completed;
     }
 }
+
 
 class TaskManager {
     constructor(){
@@ -24,7 +26,7 @@ class TaskManager {
     async addTask(description){
         await fetch('/tasks', {
             method: 'POST',
-            headers: { 'Content-type': 'application/json' },
+            headers: { 'Content-Type' : 'application/json' },
             body: JSON.stringify({ description })
         });
         this.loadTasks();
@@ -37,6 +39,7 @@ class TaskManager {
 
     async toggleTask(id){
         await fetch(`/tasks/${id}/toggle`, { method: 'PATCH'});
+        this.loadTasks();
     }
 
     render(tasks){
@@ -46,7 +49,7 @@ class TaskManager {
             const li = document.createElement('li');
             li.className = task.completed ? 'completed' : '';
 
-            const span = document.createElement('button');
+            const span = document.createElement('span');
             span.textContent = task.description;
             span.addEventListener('click', () => this.toggleTask(task.id));
 
@@ -62,10 +65,12 @@ class TaskManager {
     }
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const taskManager = new TaskManager();
     const addTaskBtn = document.getElementById('add-task-btn');
     const taskInput = document.getElementById('task-input');
+
 
     addTaskBtn.addEventListener('click', () => {
         const taskDescription = taskInput.value.trim();
@@ -76,9 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
     taskInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             addTaskBtn.click();
         }
     });
-});
+}); 
